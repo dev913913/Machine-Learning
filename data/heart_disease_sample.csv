@@ -1,0 +1,13 @@
+age_group,cholesterol,exercise_angina,heart_disease
+middle,high,yes,yes
+middle,high,no,yes
+senior,high,yes,yes
+senior,normal,yes,yes
+senior,normal,no,no
+senior,low,no,no
+adult,high,yes,yes
+adult,normal,no,no
+adult,low,no,no
+middle,normal,yes,yes
+middle,normal,no,no
+adult,high,no,yes
