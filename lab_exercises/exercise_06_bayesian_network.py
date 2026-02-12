@@ -1,41 +1,40 @@
-"""Exercise 6: Bayesian Network with simple heart-disease sample data."""
+"""Exercise 6: Bayesian Network for simplified heart-disease data."""
 
-# Step 1: Import required tools.
 import pandas as pd
 from pgmpy.estimators import MaximumLikelihoodEstimator
 from pgmpy.inference import VariableElimination
-from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.models import BayesianNetwork
 
-# Step 2: Read sample heart-disease data.
-data_table = pd.read_csv("data/heart_disease_sample.csv")
 
-# Step 3: Define network structure.
-# Each pair (A, B) means A directly influences B.
-model = DiscreteBayesianNetwork(
-    [
-        ("age_group", "heart_disease"),
-        ("cholesterol", "heart_disease"),
-        ("exercise_angina", "heart_disease"),
-    ]
-)
+def main() -> None:
+    # Load the simplified heart-disease dataset.
+    data = pd.read_csv("data/heart_disease_sample.csv")
 
-# Step 4: Learn probability tables from data.
-model.fit(data_table, estimator=MaximumLikelihoodEstimator)
+    # Define the network structure: three inputs to one output.
+    model = BayesianNetwork(
+        [
+            ("age_group", "heart_disease"),
+            ("cholesterol", "heart_disease"),
+            ("exercise_angina", "heart_disease"),
+        ]
+    )
+    # Learn probabilities (CPDs) from the data.
+    model.fit(data, estimator=MaximumLikelihoodEstimator)
 
-# Step 5: Print learned CPDs (conditional probability distributions).
-print("Learned CPDs:")
-for one_cpd in model.get_cpds():
-    print(one_cpd)
+    # Show the learned probabilities for each node.
+    print("Learned CPDs:")
+    for cpd in model.get_cpds():
+        print(cpd)
 
-# Step 6: Create inference tool for probability queries.
-inference_tool = VariableElimination(model)
+    # Use inference to ask a medical question.
+    inference = VariableElimination(model)
+    result = inference.query(
+        variables=["heart_disease"],
+        evidence={"age_group": "senior", "cholesterol": "high", "exercise_angina": "yes"},
+    )
+    print("\nInference result for senior + high cholesterol + angina:")
+    print(result)
 
-# Step 7: Ask probability of heart_disease for one evidence case.
-result = inference_tool.query(
-    variables=["heart_disease"],
-    evidence={"age_group": "senior", "cholesterol": "high", "exercise_angina": "yes"},
-)
 
-# Step 8: Print the query result.
-print("\nInference result for senior + high cholesterol + angina:")
-print(result)
+if __name__ == "__main__":
+    main()

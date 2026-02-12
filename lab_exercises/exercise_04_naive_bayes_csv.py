@@ -1,36 +1,35 @@
-"""Exercise 4: Gaussian Naive Bayes using numeric values from CSV."""
+"""Exercise 4: Gaussian Naive Bayes classifier using a CSV dataset."""
 
-# Step 1: Import required tools.
 import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
 
-# Step 2: Read data from CSV file.
-data_table = pd.read_csv("data/naive_bayes_train.csv")
 
-# Step 3: Select input columns.
-# Double brackets keep the result as a table (DataFrame).
-input_values = data_table[["feature_1", "feature_2"]]
+def main() -> None:
+    # Load numeric data from CSV.
+    data = pd.read_csv("data/naive_bayes_train.csv")
 
-# Step 4: Select output column.
-output_values = data_table["label"]
+    # Features are the input columns.
+    X = data[["feature_1", "feature_2"]]
+    # Label is the output column.
+    y = data["label"]
 
-# Step 5: Split data into training and test sets.
-train_input, test_input, train_output, test_output = train_test_split(
-    input_values, output_values, test_size=0.25, random_state=42
-)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.25, random_state=42, stratify=y
+    )
 
-# Step 6: Create model and train it.
-model = GaussianNB()
-model.fit(train_input, train_output)
+    # Create and train the Naive Bayes model.
+    model = GaussianNB()
+    model.fit(X_train, y_train)
 
-# Step 7: Predict output labels for test data.
-predicted_output = model.predict(test_input)
+    # Predict on the test set.
+    predictions = model.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
 
-# Step 8: Compute accuracy.
-accuracy = accuracy_score(test_output, predicted_output)
+    print("Predictions:", predictions)
+    print(f"Accuracy: {accuracy:.2f}")
 
-# Step 9: Print results.
-print("Predictions:", predicted_output)
-print("Accuracy:", round(accuracy, 2))
+
+if __name__ == "__main__":
+    main()

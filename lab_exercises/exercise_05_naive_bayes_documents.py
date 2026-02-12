@@ -1,45 +1,47 @@
-"""Exercise 5: Simple document classification with Naive Bayes."""
+"""Exercise 5: Document classification with Naive Bayes."""
 
-# Step 1: Import required tools.
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 
-# Step 2: Create a small text dataset.
-# Each string is one document.
-documents = [
-    "apple orange banana",
-    "banana apple fruit",
-    "dog cat hamster",
-    "cat dog pet",
-    "car bus train",
-    "train car transport",
-]
 
-# Step 3: Create labels (correct class) for each document.
-labels = ["fruit", "fruit", "animal", "animal", "vehicle", "vehicle"]
+def main() -> None:
+    # Example documents (short texts).
+    documents = [
+        "apple orange banana",
+        "banana apple fruit",
+        "dog cat hamster",
+        "cat dog pet",
+        "car bus train",
+        "train car transport",
+    ]
+    # Labels for each document.
+    labels = ["fruit", "fruit", "animal", "animal", "vehicle", "vehicle"]
 
-# Step 4: Convert words to numeric counts.
-# ML model needs numeric input, so CountVectorizer turns text into numbers.
-word_counter = CountVectorizer()
-input_values = word_counter.fit_transform(documents)
+    # Convert text into word-count vectors.
+    vectorizer = CountVectorizer()
+    X = vectorizer.fit_transform(documents)
 
-# Step 5: Split into training and test data.
-train_input, test_input, train_output, test_output = train_test_split(
-    input_values, labels, test_size=0.33, random_state=42
-)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, labels, test_size=0.33, random_state=42, stratify=labels
+    )
 
-# Step 6: Create Naive Bayes model and train it.
-model = MultinomialNB()
-model.fit(train_input, train_output)
+    # Create and train the Naive Bayes model for text data.
+    model = MultinomialNB()
+    model.fit(X_train, y_train)
 
-# Step 7: Predict labels for test documents.
-predicted_output = model.predict(test_input)
+    # Predict on the test set and compute metrics.
+    predictions = model.predict(X_test)
+    accuracy = accuracy_score(y_test, predictions)
+    precision = precision_score(y_test, predictions, average="macro")
+    recall = recall_score(y_test, predictions, average="macro")
 
-# Step 8: Compute accuracy.
-accuracy = accuracy_score(test_output, predicted_output)
+    print("Predictions:", predictions)
+    print(f"Accuracy: {accuracy:.2f}")
+    print(f"Precision: {precision:.2f}")
+    print(f"Recall: {recall:.2f}")
 
-# Step 9: Print prediction results.
-print("Predictions:", predicted_output)
-print("Accuracy:", round(accuracy, 2))
+
+if __name__ == "__main__":
+    main()
