@@ -1,24 +1,24 @@
-"""Exercise 1: Read numeric CSV data and perform basic operations."""
+"""Exercise 1: Read CSV data and do very basic table operations."""
 
+# Step 1: Import pandas.
+# `import` is a Python keyword used to bring in a library.
+# `as pd` gives pandas a short name so we can write less code.
 import pandas as pd
 
+# Step 2: Read the CSV file into a table.
+# `=` stores the result on the right side into the variable on the left side.
+data_table = pd.read_csv("data/numeric_data.csv")
 
-def main() -> None:
-    # Read the CSV file into a table (DataFrame).
-    data = pd.read_csv("data/numeric_data.csv")
+# Step 3: Print the full table so beginners can see raw rows and columns.
+print("Raw data:\n", data_table)
 
-    # Print the full table.
-    print("Raw data:\n", data)
+# Step 4: Print summary statistics for numeric columns.
+# `describe()` gives common values like count, mean, min, max.
+print("\nSummary statistics:\n", data_table.describe())
 
-    # Show common statistics like min, max, mean, and count.
-    print("\nSummary statistics:\n", data.describe())
+# Step 5: Print the mean (average) of each numeric column.
+# `numeric_only=True` means: ignore non-numeric columns.
+print("\nColumn means:\n", data_table.mean(numeric_only=True))
 
-    # Compute the mean of numeric columns.
-    print("\nColumn means:\n", data.mean(numeric_only=True))
-
-    # Compute the sum of numeric columns.
-    print("\nColumn sums:\n", data.sum(numeric_only=True))
-
-
-if __name__ == "__main__":
-    main()
+# Step 6: Print the sum (total) of each numeric column.
+print("\nColumn sums:\n", data_table.sum(numeric_only=True))
